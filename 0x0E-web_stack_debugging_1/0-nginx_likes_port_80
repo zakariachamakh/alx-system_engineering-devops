@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-# configures a server to listening on port 80 of all server's active IPv4 IPs
 
-sudo sed -i "s/8080/80/" /etc/nginx/sites-enabled/default
+# Replace the default NGINX configuration to listen on port 80
+sudo sed -i 's/^\s*listen\s*8080/    listen 80/g' /etc/nginx/sites-enabled/default
+
+# Add a configuration to listen on all active IPv4 addresses
+echo "listen [::]:80 default_server ipv6only=off;" | sudo tee -a /etc/nginx/sites-enabled/default > /dev/null
+
+# Restart NGINX service to apply the changes
 sudo service nginx restart
