@@ -3,7 +3,23 @@
 #   localhost from 127.0.0.1 to 127.0.0.2
 #   facebook.com from 157.240.11.35 to 8.8.8.8
 
-cp /etc/hosts ~/hosts.new
-echo "127.0.0.2		localhost" > ~/hosts.new
-echo "8.8.8.8		facebook.com" >> ~/hosts.new
-cp -f ~/hosts.new /etc/hosts
+# cp /etc/hosts ~/hosts.new
+# echo "127.0.0.2		localhost" > ~/hosts.new
+# echo "8.8.8.8		facebook.com" >> ~/hosts.new
+# cp -f ~/hosts.new /etc/hosts
+
+
+#!/bin/bash
+
+# Check if the script is being run in Docker
+if grep -q docker /proc/1/cgroup; then
+    echo "Running in Docker."
+    
+    # Modify the /etc/hosts file
+    sudo sed -i 's/127\.0\.0\.1\slocalhost/127.0.0.2 localhost/g' /etc/hosts
+    sudo sed -i 's/facebook\.com/8.8.8.8 facebook.com/g' /etc/hosts
+    
+    echo "Configured localhost to resolve to 127.0.0.2 and facebook.com to resolve to 8.8.8.8 in /etc/hosts."
+else
+    echo "This script should be run inside Docker."
+fi
